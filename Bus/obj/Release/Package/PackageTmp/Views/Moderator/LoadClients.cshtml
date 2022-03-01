@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Bus.Models.Client>
+
+@if (Model.Count() == 0)
+{
+    <h3 id='roadHCl' class='h3 text-center'>Пассажиров Нет</h3>
+
+    <button style="margin:50px 0 0 0;" id="addClientBut" data-toggle="modal" data-target="#basicModal" class="btn btn-default">Добавить Пассажира</button>
+
+}
+
+else
+{
+
+
+    <button style="margin:50px 0 0 0;" id="addClientBut" data-toggle="modal" data-target="#basicModal" class="btn btn-default">Добавить Пассажира</button>
+
+
+
+
+            <table class="table">
+                <tr>
+
+
+                    <th>
+                        @Html.DisplayNameFor(model => model.FIO)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Phone)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.PlaceBus)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CoordsFrom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CoordsTo)
+                    </th>
+                    <th>
+                        Пассажиры
+                    </th>
+                    <th></th>
+
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FIO)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Phone)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PlaceBus)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CoordsFrom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CoordsTo)
+                        </td>
+                        <td>
+                            @if (item.RouteId == null)
+                    {
+                                @Html.Raw("Маршрут Не Присвоен")
+                            }
+                            else
+                            {
+                                @Html.Raw("Маршрут:" + item.Route.NameRoute + ",Водитель:" + item.Route.NameDriver)
+                            }
+                        </td>
+
+                        <td>
+                            @Html.ActionLink("Ред.", "Edit", "Clients", new { id = item.Id }, null) |
+
+                            @Html.ActionLink("Удл.", "Delete", "Clients", new { id = item.Id }, null)
+                        </td>
+                    </tr>
+                }
+
+            </table>
+}

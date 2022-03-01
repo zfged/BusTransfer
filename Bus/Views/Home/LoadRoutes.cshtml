@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Bus.Models.Route>
+
+@if (Model.Count() == 0)
+{
+    <h3 id='roadHCl' class='h3 text-center'>Маршрутов Нет</h3>
+
+
+    <button style="margin:50px 0 0 0;" id="AddRouteBut" class="btn btn-default">Добавить Маршрут</button>
+
+}
+
+else
+{
+
+
+    <button style="margin:50px 0 0 0;" id="AddRouteBut" class="btn btn-default">Добавить Маршрут</button>
+
+
+
+
+    <table class="table">
+        <tr>
+
+
+            <th>
+                @Html.DisplayNameFor(model => model.NameDriver)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NameRoute)
+            </th>
+
+
+
+            <th>
+                Имена Пассажиров
+            </th>
+
+            <th>
+                Откуда Забирать
+            </th>
+
+            <th>
+                Куда Везти
+            </th>
+
+            <th>
+                Количество Людей
+            </th>
+
+            <th></th>
+
+        </tr>
+
+        @foreach (var item in Model)
+                {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameDriver)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NameRoute)
+                </td>
+
+                <td>
+                    @{
+                        var clients = "";
+                        foreach (var client in item.Clients)
+                        {
+                            clients += client.FIO.ToString() + ", ";
+                        }
+
+                        if (clients == "")
+                        {
+                            clients = "Пасажиры Не Добавлены";
+                        }
+                        else
+                        {
+
+                            clients = clients.Substring(0, clients.Length - 2);
+                        }
+                    }
+
+                    @clients
+                </td>
+
+                <td>
+                    <a href='/maps?coordsType=false&id=@item.Id'>@ViewBag.url/maps?coordsType=false&id=@item.Id</a>
+
+                </td>
+
+                <td>
+                    <a href='/maps?coordsType=true&id=@item.Id'>@ViewBag.url/maps?coordsType=true&id=@item.Id</a>
+
+                </td>
+
+                <td>
+                    @item.Clients.Count()
+                </td>
+
+
+                <td>
+                    @Html.ActionLink("Ред.", "Edit", "Routes", new { id = item.Id }, null) |
+
+                    @Html.ActionLink("Удл.", "Delete", "Routes", new { id = item.Id }, null)
+                </td>
+            </tr>
+                        }
+
+    </table>
+                        }
+
+
+<script type="text/javascript">
+
+    $(document).on("click", "#AddRouteBut", function () {
+        debugger;
+        $("#selectClients").html("@Html.Raw(ViewBag.FreeClients)");
+        $('.selectpicker').selectpicker();
+    });
+
+    $(document).on("click", "#addClientBut", function () {
+        debugger;
+        $("#selectRoutes").html("@Html.Raw(ViewBag.SelectRoutes)");
+
+    });
+
+    
+
+
+
+</script>

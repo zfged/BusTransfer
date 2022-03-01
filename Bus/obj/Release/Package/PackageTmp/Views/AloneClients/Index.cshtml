@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Bus.Models.Client>
+
+@{
+    ViewBag.Title = "Index";
+}
+<h1 align="center">Клиенты</h1>
+<table class="table">
+    <tr>
+       
+        <th>
+            @Html.DisplayNameFor(model => model.FIO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Phone)
+        </th>
+       
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.FIO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            
+           
+        </tr>
+    }
+
+</table>
+
+<a href="@Url.Action("index","manage")"><button>Личный Кабинет</button></a>
+<a href="@Url.Action("excel")"><button>Скачать Excel</button></a>
+<div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+        <div id="remain">@{Html.RenderAction("LastSMS", "SMS");}</div>
+    </div>
+</div>
+
+@using (Ajax.BeginForm("Mailing", "aloneclients", new AjaxOptions
+{
+    UpdateTargetId = "reportSMS",
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+
+
+    OnComplete = "OnComplete",
+    LoadingElementId = "LoadingDiv",
+    Confirm = "Выполнить Рассылку Клиентам?"
+
+}))
+{
+
+
+    <div class="form-horizontal">
+        <h4>Разсылка Сообщений</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <label>Введдите текст сообщения для Разсылки</label>
+            <div class="col-md-10">
+                <textarea name="smsText"></textarea>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Отправить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+    <div id="reportSMS"></div>
+}
+
+<script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

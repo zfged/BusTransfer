@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Bus.Models.SMSSend>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Отчет об Рассылке</h2>
+@if (Model.Count() != 0)
+{
+<table class="table">
+    <tr>
+        <th>
+            ФИО
+        </th>
+        <th>
+           Телефон
+        </th>
+        <th>
+            Доставка
+        </th>
+       
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FIO)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumberUser)
+            </td>
+
+            <td>
+                @if (item.Verify == true)
+                {
+                    <label style="color:green;" >Успешно</label>
+                }
+                else
+                {
+                    <label style="color:red;">Не Успешно</label>
+                }
+            </td>
+           
+        </tr>
+    }
+
+</table>
+}
+else
+{
+    <h2>Не Передано Сообщение для Отправки</h2>
+}

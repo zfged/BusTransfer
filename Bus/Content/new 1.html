@@ -1,0 +1,709 @@
+@{
+    ViewBag.Title = "Admin Page";
+
+}
+
+@model Bus.Models.Client
+
+
+
+<link href="~/Content/Bus.css" rel="stylesheet" />
+<link href="~/Content/ion.calendar.css" rel="stylesheet" />
+<script src="~/Scripts/moment-with-locales.min.js"></script>
+<script src="~/Scripts/ion.calendar.js"></script>
+
+<style>
+    .radio_buttons {
+        margin: 20px;
+        font: 14px Tahoma;
+    }
+
+        .radio_buttons div {
+            float: left;
+        }
+
+        .radio_buttons input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .radio_buttons label {
+            display: block;
+            color: #fff;
+            margin: 0 0 0 -1px;
+            padding: 8px 10px;
+            border: 1px solid #BBBBBB;
+            background: red;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
+            cursor: pointer;
+        }
+
+        .radio_buttons input:checked + label {
+            background: green;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, .2);
+        }
+
+        .radio_buttons div:first-child label {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .radio_buttons div:last-child label {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+</style>
+
+
+
+
+
+<div id="mywrapper">
+    <div id="myleft">
+
+        <h1 style="margin-top:0;" id="roadH" class="h3 text-center"></h1>
+
+        <h1 style="margin-top:0;" class="h3 text-center busHide">Выберите Дату и Направление</h1>
+
+        <div min-width:250px; class="myCalendar" id="myCalendar-1"></div>
+
+        <div class="radio_buttons">
+            <div style="width:105px;">
+                <input type="radio" name="option" id="radio1" />
+                <label class='roadBus' for='radio1'>Киев-Москва</label>
+            </div>
+            <div style="width:105px;">
+                <input type="radio" name="option" id="radio2" />
+                <label class='roadBus' for='radio2'>Москва-Киев</label>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="myright">
+        <div id="routes"></div>
+
+    </div>
+</div>
+
+<div id="clients"></div>
+
+
+<style>
+    #mywrapper {
+        min-width: 100%;
+        position: absolute;
+    }
+
+    #myleft {
+        width: 20%;
+        height: 600px;
+        position: absolute;
+        top: 0;
+        right: 80%;
+        margin-top: 80px;
+        
+    }
+
+    #myright {
+        width: 80%;
+        height: 600px;
+        position: absolute;
+        top: 0;
+        left: 20%;
+        margin-top: 100px;
+        font-size: x-small;
+    }
+
+
+
+
+    #clients {
+        position: absolute;
+        margin-top: 450px;
+        width: 100%;
+    }
+
+    #clients {
+        position: absolute;
+        margin-top: 450px;
+        width: 100%;
+    }
+</style>
+
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+
+        $('#form0').submit(function () {
+            alert($('#clientsSelect').val()); 
+            
+            $("#clientsField").val($('#clientsSelect').val());
+            return true; // return false to cancel form action
+        });
+
+        $(document).on("click", "#AddRouteBut", function () {
+
+                $('#basicModalRoute').modal('show');
+
+        });
+
+        $("#typeLan").on('change', function () {
+            debugger
+            if (this.value == "Russia") {
+                jQuery(function ($) {
+                    debugger;
+                    $("#Phone").mask("+79999999999");
+                });
+            }
+
+            if (this.value == "Ukraine") {
+                jQuery(function ($) {
+                    debugger;
+                    $("#Phone").mask("+380999999999");
+                });
+            }
+        })
+
+
+        window.roadType = " (Будущий Рейс)";
+        window.roadTypeColor = "green";
+        window.dateSel = "@System.DateTime.Now.ToString("dd.MM.yyyy")";
+        $('#Date').val(window.dateSel);
+        $('#DateRoute').val(window.dateSel);
+
+
+        $(document).on("click", ".isFree", function () {
+            debugger;
+            $("#PlaceBus").val($(this).children("label").text());
+        });
+
+        var onSuccess = function (result) {
+            // enable unobtrusive validation for the contents
+            // that was injected into the <div id="result"></div> node
+            $.validator.unobtrusive.parse($(result));
+        };
+
+
+
+
+        $("#myCalendar-1").ionCalendar({
+            lang: "ru",
+            startDate: "@System.DateTime.Now.ToString("dd.MM.yyyy")",    // язык календаря
+            sundayFirst: false,             // первый день недели
+            years: "1",                    // диапазон лет
+            format: "DD.MM.YYYY",           // формат возвращаемой даты
+
+            onClick: function (date) {        // клик по дням вернет сюда дату
+                window.dateSel = date;
+                debugger;
+                $('#Date').val(date);
+                debugger
+                $('#DateRoute').val(date);
+                $('#clients').hide();
+                $('#routes').hide();
+                console.log(date);
+            }
+        });
+
+        $(document).on("click", "#myNow", function () {
+
+
+            window.roadType = " (Будущий Рейс)";
+            window.roadTypeColor = "green";
+            $("#radio1").attr('checked', false);
+            $("#radio2").attr('checked', false);
+
+            $(".busHide").show();
+        });
+
+        $(document).on("click", "#myBefore", function () {
+
+            window.roadType = " (Прощедший Рейс)";
+            window.roadTypeColor = "red";
+            $("#radio1").attr('checked', false);
+            $("#radio2").attr('checked', false);
+
+            $(".busHide").show();
+        });
+
+
+        $(".roadBus").click(function () {
+            debugger;
+
+
+
+            if ($(this).attr("for") == "radio1") {
+                $("#roadH").text("Киев - Москва" + window.roadType);
+                $("#roadH").css("color", window.roadTypeColor);
+
+
+
+                $(".busHide").hide();
+
+                window.roadGlobal = false;
+
+
+            window.getRoute = {
+                date: window.dateSel,
+                roadType: false
+            }
+
+            $("#RoadType").prop('checked', false);
+            $("#RoadTypeRoute").prop('checked', false);
+            $("#RoadHForm").text("Киев-Москва");
+
+
+             $.ajax({
+                url: '@Url.Action("LoadClients", "Home")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                success: function (result) {
+                    debugger;
+                    $('#clients').show();
+                    $('#clients').html(result);
+                }
+            });
+
+                 $.ajax({
+                url: '@Url.Action("LoadRoutes", "Home")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                success: function (result, status, xhr) {
+                    debugger;
+                    $('#routes').show();
+                    $('#routes').html(result);
+                    console.log(xhr.getResponseHeader("freeClients"));
+                    $("#selectClients").html(xhr.getResponseHeader("freeClients"));
+                    $('.selectpicker').selectpicker();
+                }
+            });
+
+
+
+
+
+
+
+
+
+                   $("#roadHCl").text("Клиенты Киев - Москва" + window.roadType);
+                   $("#roadHCl").css("color", window.roadTypeColor);
+
+            }
+
+            if ($(this).attr("for") == "radio2") {
+                $("#roadH").text("Москва - Киев" + roadType);
+                $("#roadH").css("color", roadTypeColor);
+
+
+                $(".busHide").hide();
+
+                window.roadGlobal = true;
+                debugger;
+                window.getRoute = {
+                    date: window.dateSel,
+                    roadType: true
+                }
+
+                $("#RoadType").prop('checked', true);
+                $("#RoadTypeRoute").prop('checked', true);
+                $("#RoadHForm").text("Москва-Киев");
+
+
+
+
+
+                $.ajax({
+                    url: '@Url.Action("LoadClients", "Home")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                    success: function (result) {
+                        debugger;
+                        $('#clients').show();
+                        $('#clients').html(result);
+
+                    }
+                });
+
+
+                 $.ajax({
+                url: '@Url.Action("LoadRoutes", "Home")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                success: function (result, status, xhr) {
+                    debugger;
+                    $('#routes').show();
+                    $('#routes').html(result);
+                    console.log(xhr.getResponseHeader("freeClients"));
+                    $("#selectClients").html(xhr.getResponseHeader("freeClients"));
+                    $('.selectpicker').selectpicker();
+                }
+            });
+
+
+                $("#roadHCl").text("Клиенты Москва - Киев" + window.roadType);
+                $("#roadHCl").css("color", window.roadTypeColor);
+            }
+
+
+        });
+    });
+</script>
+
+
+
+
+<div class="modal fade" id="basicModalRoute" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">x</button>
+                <h4 class="modal-title" id="myModalLabel">Добавления Маршрута</h4>
+            </div>
+            <div class="modal-body">
+
+                @using (Ajax.BeginForm("AddRoute", "home", new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+
+
+
+                    OnComplete = "OnCompleteRoute",
+                    LoadingElementId = "LoadingDiv",
+                    Confirm = "Выполнить Добавления Маршрута?"
+
+                }))
+                {
+
+
+                    <div class="form-horizontal">
+                        <h4>Маршрут</h4>
+                        <hr>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="NameDriver">Имя Водителя</label>
+                            <div class="col-md-10">
+                                <input class="form-control text-box single-line" data-val="true" data-val-required="Требуется поле Имя Водителя." id="NameDriver" name="NameDriver" type="text" value="">
+                                <span class="field-validation-valid text-danger" data-valmsg-for="NameDriver" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2" for="NameRoute">Название Маршрута</label>
+                            <div class="col-md-10">
+                                <input class="form-control text-box single-line" data-val="true" data-val-required="Требуется поле Название Маршрута." id="NameRoute" name="NameRoute" type="text" value="">
+                                <span class="field-validation-valid text-danger" data-valmsg-for="NameRoute" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" hidden>
+                            <label class="control-label col-md-2" for="DateRoute">Дата</label>
+                            <div class="col-md-10">
+                                <input id="DateRoute" name="DateRoute" type="text">
+                            </div>
+                        </div>
+
+                        <div class="form-group" hidden>
+                            <label class="control-label col-md-2" for="RoadTypeRoute">Тип Поездки</label>
+                            <div class="col-md-10">
+                                <div class="checkbox">
+                                    <input id="RoadTypeRoute" name="RoadTypeRoute" type="checkbox" />
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2" >Клиенты</label>
+                            <div class="col-md-10"  id="selectClients">
+                                
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="clientsField" id="clientsField" />
+
+                        
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Добавить Маршрут" class="btn btn-default">
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="basicModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" type="button" data-dismiss="modal">x</button>
+                <h4 class="modal-title" id="myModalLabel">Добавления пассажира в Рейс</h4>
+            </div>
+            <div class="modal-body">
+
+                @using (Ajax.BeginForm("CreatePar", "home", new AjaxOptions
+                {
+                    HttpMethod = "POST",
+                    InsertionMode = InsertionMode.Replace,
+
+
+
+                    OnComplete = "OnComplete",
+                    LoadingElementId = "LoadingDiv",
+                    Confirm = "Выполнить Добавления Пассажира?"
+
+                }))
+                {
+
+
+                    <div class="form-horizontal">
+                        <h4 id="RoadHForm"></h4>
+                        <hr />
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <div class="form-group" hidden>
+                            @Html.LabelFor(model => model.RoadType, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div hidden class="col-md-10">
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.RoadType)
+                                    @Html.ValidationMessageFor(model => model.RoadType, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PlaceBus, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.PlaceBus, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.PlaceBus, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group" hidden>
+                            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.FIO, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.FIO, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.FIO, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Выберите Тип Телефона</label>
+                            <div class="col-md-10">
+                                <select id="typeLan">
+                                    <option value="Ukraine">Украинский</option>
+                                    <option value="Russia">Русский</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CoordsFrom, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.CoordsFrom, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CoordsFrom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CoordsTo, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.CoordsTo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CoordsTo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RouteId, "RouteId", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("RouteId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.RouteId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Добавить Пассажира" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<script type="text/javascript">
+    function OnCompleteRoute(data, status) {
+        debugger;
+
+        if (status == "success") {
+            debugger;
+            if (data.responseText == "<h1 style='color:red;'>Ошибка Валидации</h1>") {
+
+                alert("Ошибка Валидации");
+            }
+            else {
+                alert("Маршрут Успешно Добавлен");
+                console.log(data);
+
+                $.ajax({
+                    url: '@Url.Action("LoadRoutes", "Home")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                success: function (result, status, xhr) {
+                    debugger;
+                    $('#routes').show();
+                    $('#routes').html(result);
+                    console.log(xhr.getResponseHeader("freeClients"));
+                    $("#selectClients").html(xhr.getResponseHeader("freeClients"));
+                    $('.selectpicker').selectpicker();
+                }
+                });
+
+                 $.ajax({
+                    url: '@Url.Action("LoadClients", "Home")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                    success: function (result) {
+                        debugger;
+                        $('#clients').show();
+                        $('#clients').html(result);
+
+                    }
+                });
+
+
+            }
+            $('#basicModalRoute').modal('hide');
+        }
+        if (status == "error") {
+            if (data.responseText.indexOf("Cannot insert duplicate key row in object") + 1) {
+                alert("Рейс на Этот день уже создан");
+            }
+            else {
+                alert("При Добавлении Маршрута Возникла Ошибка на Сервере");
+                console.log(data.responseText);
+            }
+        }
+    }
+
+    function OnComplete(data, status) {
+        debugger;
+
+        if (status == "success") {
+            debugger;
+            if (data.responseText == "<h1 style='color:red;'>Ошибка Валидации</h1>") {
+
+                alert("Ошибка Валидации");
+            }
+            else {
+                alert("Пассажир Успешно Добавлен");
+
+
+                 $.ajax({
+                    url: '@Url.Action("LoadRoutes", "Home")',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                success: function (result, status, xhr) {
+                    debugger;
+                    $('#routes').show();
+                    $('#routes').html(result);
+                    console.log(xhr.getResponseHeader("freeClients"));
+                    $("#selectClients").html(xhr.getResponseHeader("freeClients"));
+                    $('.selectpicker').selectpicker();
+                }
+                });
+
+                 $.ajax({
+                    url: '@Url.Action("LoadClients", "Home")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(window.getRoute), // JSON.stringify(searchTerm),
+                    success: function (result) {
+                        debugger;
+                        $('#clients').show();
+                        $('#clients').html(result);
+
+                    }
+                });
+
+
+            }
+            $('#basicModal').modal('hide');
+        }
+        if (status == "error") {
+            debugger;
+
+            if (data.responseText.indexOf("Cannot insert duplicate key row in object") + 1) {
+                alert("Это Место Уже Занято");
+            }
+            else {
+                alert("При Добавлении Пассажира Возникла Ошибка на Сервере");
+                console.log(data.responseText);
+            }
+        }
+    }
+
+</script>
+
+
+
+<script type="text/javascript" src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+
+
+
+
+

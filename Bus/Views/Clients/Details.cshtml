@@ -1,0 +1,82 @@
+﻿@model Bus.Models.Client
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Client</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Route.NameRoute)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Route.NameRoute)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FIO)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FIO)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlaceBus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlaceBus)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RoadType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RoadType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CoordsFrom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CoordsFrom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CoordsTo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CoordsTo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

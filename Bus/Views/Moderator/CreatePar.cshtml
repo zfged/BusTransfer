@@ -1,0 +1,58 @@
+﻿
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+
+        <div  class="form-group">
+            <label class="control-label col-md-2" for="RoadType">RoadType</label>
+            <div class="col-md-10">
+                <div class="checkbox">
+                    <input class="check-box" data-val="true" data-val-required="Требуется поле RoadType." id="RoadType" name="RoadType" type="checkbox" value="true" /><input name="RoadType" type="hidden" value="false" />
+                    <span class="field-validation-valid text-danger" data-valmsg-for="RoadType" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+        </div>
+
+        <div  class="form-group">
+            <label class="control-label col-md-2" for="Date">Date</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-maxlength="Поле Date должно иметь тип строки или массива с максимальной длиной &quot;20&quot;." data-val-maxlength-max="20" data-val-required="Требуется поле Date." id="Date" name="Date" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Date" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="FIO">FIO</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-required="Требуется поле FIO." id="FIO" name="FIO" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="FIO" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Phone">Phone</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-required="Требуется поле Phone." id="Phone" name="Phone" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Phone" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div  class="form-group">
+            <label class="control-label col-md-2" for="Place">Place</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" data-val="true" data-val-maxlength="Поле Place должно иметь тип строки или массива с максимальной длиной &quot;20&quot;." data-val-maxlength-max="20" data-val-required="Требуется поле Place." id="Place" name="Place" type="text" value="" />
+                <span class="field-validation-valid text-danger" data-valmsg-for="Place" data-valmsg-replace="true"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+
+}
+
